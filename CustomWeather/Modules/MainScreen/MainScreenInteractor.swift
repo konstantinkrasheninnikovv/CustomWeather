@@ -28,3 +28,27 @@ final class MainScreenInteractor {
 extension MainScreenInteractor: MainScreenInteractorProtocol {
     
 }
+
+// MARK: - Network Request
+
+extension MainScreenInteractor {
+    
+    func fetchWeather() {
+        
+        let network = NetworkManager()
+        let endpoint = WeatherEndpoint.forecast(city: "Limassol", days: 2)
+        
+        Task {
+            do {
+                let weather: WeatherResponse = try await network.fetch(endpoint: endpoint)
+                
+                await MainActor.run {
+                    print("Температура в Лимассоле: \(weather.current.tempC)")
+                }
+            } catch {
+                print("Ошибка парсинга: \(error)")
+            }
+        }
+    }
+}
+

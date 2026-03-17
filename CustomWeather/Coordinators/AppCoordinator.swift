@@ -9,7 +9,6 @@ import UIKit
 
 final class AppCoordinator: Coordinator {
     
-        
     // MARK: - Public properties
     
     var navigationController: UINavigationController?
@@ -31,9 +30,7 @@ final class AppCoordinator: Coordinator {
     
     private func startMainScreenFlow() {
         let mainScreenCoordinator = MainScreenCoordinator(navigationController: navigationController)
-        print("AppCoordinator: Coordinator")
         childCoordinator.append(mainScreenCoordinator)
         mainScreenCoordinator.startFlow()
     }
-    
 }

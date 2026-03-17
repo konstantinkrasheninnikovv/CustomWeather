@@ -25,8 +25,15 @@ final class MainScreenViewController: UIViewController {
     private var presenter: MainScreenViewControllerOutput?
     private let contentView: MainScreenViewProtocol? = MainScreenView()
     
+    // to delete!
+    
+    let interactor = MainScreenInteractor()
+    
+    // to delete!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        interactor.fetchWeather()
     }
     
     // MARK: - Initialization
