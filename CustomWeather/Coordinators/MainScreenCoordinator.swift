@@ -21,7 +21,6 @@ class MainScreenCoordinator: Coordinator {
     }
     
     func startFlow() {
-        print("MainScreenCoordinator: Coordinator")
         let rootVC = MainScreenAssembly.buildModule()
         viewControllers.append(rootVC)
         navigationController?.pushViewController(rootVC, animated: false)
