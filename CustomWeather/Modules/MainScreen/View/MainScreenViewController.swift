@@ -7,38 +7,41 @@
 
 import UIKit
 
-protocol MainScreenViewDelegate {
+protocol MainScreenViewDelegate: AnyObject {
     
 }
 
 //MARK: - Сommands from the presenter
 
 protocol MainScreenViewControllerInput: AnyObject {
-    
+    func displayHourlyWeather(_ models: [MainScreenHourlyWeatherSectionCellModel])
 }
 
 final class MainScreenViewController: UIViewController {
     
-    
-    // MARK: - External dependencies
+    // MARK: - Private propeties
     
     private var presenter: MainScreenViewControllerOutput?
-    private let contentView: MainScreenViewProtocol? = MainScreenView()
+    private let mainView: MainScreenViewProtocol = MainScreenView()
+    private let viewManager: MainScreenViewManagerProtocol
+
+    //MARK: - Lifecycle
     
-    // to delete!
-    
-    let interactor = MainScreenInteractor()
-    
-    // to delete!
+    override func loadView() {
+        view = mainView
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        interactor.fetchWeather()
+        initialSetup()
+        
+        presenter?.viewDidLoad()
     }
     
     // MARK: - Initialization
     
-    init() {
+    init(viewManager: MainScreenViewManagerProtocol) {
+        self.viewManager = viewManager
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -49,7 +52,23 @@ final class MainScreenViewController: UIViewController {
     func setUpPresenter(_ presenter: MainScreenViewControllerOutput) {
         self.presenter = presenter
     }
+}
+
+// MARK: - View Controller Setup
+
+private extension MainScreenViewController {
     
+    private func initialSetup() {
+        mainView.delegate = self
+        setSettingsCollectionViewBridge()
+    }
+    
+    private func setSettingsCollectionViewBridge() {
+        mainView.setCollectionViewDataSourseAndDelegate(
+            dataSource: viewManager,
+            delegate: viewManager
+        )
+    }
 }
 
 // MARK: - MainMainScreenViewDelegate
@@ -61,5 +80,12 @@ extension MainScreenViewController: MainScreenViewDelegate {
 // MARK: - MainScreenViewControllerInput
 
 extension MainScreenViewController: MainScreenViewControllerInput {
+    func displayHourlyWeather(_ models: [MainScreenHourlyWeatherSectionCellModel]) {
+        viewManager.hourlyCells = models
+//        (view as? MainScreenView)?.collectionView.reloadData()
+    }
+    
+    
+    
     
 }
