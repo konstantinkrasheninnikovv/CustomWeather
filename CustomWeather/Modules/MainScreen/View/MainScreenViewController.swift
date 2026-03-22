@@ -16,6 +16,7 @@ protocol MainScreenViewDelegate: AnyObject {
 
 protocol MainScreenViewControllerInput: AnyObject {
     func displayHourlyWeather(_ models: [MainScreenHourlyWeatherSectionCellModel])
+    func displayCurrentWeather(_ model: CurrentWeatherViewModel)
 }
 
 final class MainScreenViewController: UIViewController {
@@ -35,7 +36,6 @@ final class MainScreenViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initialSetup()
-        
         presenter?.viewDidLoad()
     }
     
@@ -61,14 +61,11 @@ private extension MainScreenViewController {
     
     private func initialSetup() {
         mainView.delegate = self
-        setSettingsCollectionViewBridge()
+        setupViewManager()
     }
     
-    private func setSettingsCollectionViewBridge() {
-        mainView.setCollectionViewDataSourseAndDelegate(
-            dataSource: viewManager,
-            delegate: viewManager
-        )
+    private func setupViewManager() {
+        mainView.assignManager(viewManager)
     }
 }
 
@@ -83,6 +80,10 @@ extension MainScreenViewController: MainScreenViewDelegate {
 extension MainScreenViewController: MainScreenViewControllerInput {
     func displayHourlyWeather(_ models: [MainScreenHourlyWeatherSectionCellModel]) {
         viewManager.hourlyCells = models
-//        (view as? MainScreenView)?.collectionView.reloadData()
+        mainView.reloadInfo()
+    }
+    
+    func displayCurrentWeather(_ model: CurrentWeatherViewModel) {
+        mainView.displayCurrentWeather(model)
     }
 }

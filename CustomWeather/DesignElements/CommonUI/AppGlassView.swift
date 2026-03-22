@@ -19,7 +19,7 @@ final class AppGlassView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupView()
+        layoutSetup()
     }
     
     required init?(coder: NSCoder) {
@@ -29,7 +29,7 @@ final class AppGlassView: UIView {
 
 private extension AppGlassView {
     
-    private func setupView() {
+    private func layoutSetup() {
         configureLayer()
         configureSubviews()
         makeConstrains()

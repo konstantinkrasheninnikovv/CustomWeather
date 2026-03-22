@@ -29,6 +29,7 @@ final class MainScreenHourlyWeatherSectionCell: UICollectionViewCell {
         stack.axis = .vertical
         stack.alignment = .center
         stack.spacing = 6
+        stack.distribution = .equalSpacing
         return stack
     }()
     
@@ -36,7 +37,7 @@ final class MainScreenHourlyWeatherSectionCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupUI()
+        layoutSetup()
     }
     
     required init?(coder: NSCoder) {
@@ -58,7 +59,7 @@ final class MainScreenHourlyWeatherSectionCell: UICollectionViewCell {
 
 private extension MainScreenHourlyWeatherSectionCell {
     
-    private func setupUI() {
+    private func layoutSetup() {
         configureSubviews()
         makeConstrains()
         
@@ -93,8 +94,8 @@ private extension MainScreenHourlyWeatherSectionCell {
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 4),
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4),
             
-            iconImageView.heightAnchor.constraint(equalToConstant: 120),
-            iconImageView.widthAnchor.constraint(equalToConstant: 120)
+            iconImageView.heightAnchor.constraint(equalToConstant: 35),
+            iconImageView.widthAnchor.constraint(equalToConstant: 35)
         ])
     }
 }

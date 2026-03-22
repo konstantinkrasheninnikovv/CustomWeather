@@ -8,11 +8,10 @@
 import UIKit
 
 protocol MainScreenViewProtocol: UIView {
-var delegate: MainScreenViewDelegate? { get set }
-    func setCollectionViewDataSourseAndDelegate(
-        dataSource: UICollectionViewDataSource,
-        delegate: UICollectionViewDelegate
-    )
+    var delegate: MainScreenViewDelegate? { get set }
+    func reloadInfo()
+    func assignManager(_ manager: UICollectionViewDataSource & UICollectionViewDelegate)
+    func displayCurrentWeather(_ model: CurrentWeatherViewModel)
 }
 
 final class MainScreenView: UIView, MainScreenViewProtocol {
@@ -21,9 +20,17 @@ final class MainScreenView: UIView, MainScreenViewProtocol {
 
     // MARK: - UI Objects
     
+    private lazy var currentWeatherView: CurrentWeatherView = {
+        let view = CurrentWeatherView()
+        return view
+    }()
+    
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
+        layout.itemSize = CGSize(width: 85, height: 160)
+        layout.minimumLineSpacing = 12
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.backgroundColor = .clear
         cv.showsHorizontalScrollIndicator = false
@@ -36,7 +43,7 @@ final class MainScreenView: UIView, MainScreenViewProtocol {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupUI()
+        layoutSetup()
     }
     
     required init?(coder: NSCoder) {
@@ -45,34 +52,47 @@ final class MainScreenView: UIView, MainScreenViewProtocol {
     
     // MARK: - Public Methods
     
-    func setCollectionViewDataSourseAndDelegate( dataSource: UICollectionViewDataSource,
-                                                 delegate: UICollectionViewDelegate) {
-        collectionView.dataSource = dataSource
-        collectionView.delegate = delegate
+    func assignManager(_ manager: UICollectionViewDataSource & UICollectionViewDelegate) {
+            collectionView.dataSource = manager
+            collectionView.delegate = manager
+        }
+    
+    func reloadInfo() {
+        collectionView.reloadData()
     }
     
+    func displayCurrentWeather(_ model: CurrentWeatherViewModel) {
+        currentWeatherView.configure(with: model)
+    }
 }
 
      // MARK: - Layout
 
 private extension MainScreenView {
-    private func setupUI() {
+    private func layoutSetup() {
         configureSubviews()
         makeConstrains()
         backgroundColor = .systemBlue
     }
     
     private func configureSubviews() {
+        addSubview(currentWeatherView)
         addSubview(collectionView)
     }
     
     private func makeConstrains() {
+        currentWeatherView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
-            collectionView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            collectionView.heightAnchor.constraint(equalToConstant: 150)
+            currentWeatherView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10),
+            currentWeatherView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            currentWeatherView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            
+            collectionView.topAnchor.constraint(equalTo: currentWeatherView.bottomAnchor, constant: 24),
+            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            collectionView.heightAnchor.constraint(equalToConstant: 160)
         ])
     }
 }

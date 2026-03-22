@@ -18,6 +18,5 @@ final class MainScreenAssembly {
         viewController.setUpPresenter(presenter)
         interactor.setUpPresenter(presenter)
         return viewController
-        
     }
 }
