@@ -16,7 +16,13 @@ enum Theme {
         static let temperature = UIFont.systemFont(ofSize: 20, weight: .bold)
         static let description = UIFont.systemFont(ofSize: 12, weight: .regular)
         
+        static let feelsLikeLabelFont = UIFont.systemFont(ofSize: 22, weight: .regular)
+        
         static let cityTitle = UIFont.systemFont(ofSize: 34, weight: .bold)
+        
+        //MARK: - MainScreenDaysForecastViewCell
+        
+        static let fontForTemperature = UIFont.systemFont(ofSize: 16, weight: .bold)
     }
     
     // MARK: - Colors

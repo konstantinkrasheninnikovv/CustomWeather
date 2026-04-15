@@ -21,7 +21,6 @@ final class SeparatorView: UIView {
         super.init(frame: .zero)
         self.backgroundColor = color
         
-        // Устанавливаем приоритет сжатия, чтобы линия не «раздувалась»
         if orientation == .horizontal {
             setContentHuggingPriority(.required, for: .vertical)
             setContentCompressionResistancePriority(.required, for: .vertical)
@@ -35,9 +34,7 @@ final class SeparatorView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // Автоматически задаем размер линии
     override var intrinsicContentSize: CGSize {
-        // Если это горизонтальная линия, ширина гибкая, высота фиксированная
         return CGSize(width: UIView.noIntrinsicMetric, height: thickness)
     }
 }

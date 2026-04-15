@@ -28,7 +28,6 @@ final class MainScreenHourlyWeatherSectionCell: UICollectionViewCell {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.alignment = .center
-        stack.spacing = 6
         stack.distribution = .equalSpacing
         return stack
     }()
@@ -50,8 +49,7 @@ final class MainScreenHourlyWeatherSectionCell: UICollectionViewCell {
         timeLabel.configure(with: model.timeLabelModel)
         tempLabel.configure(with: model.tempLabelModel)
         descLabel.configure(with: model.descLabelModel)
-        
-        iconImageView.image = UIImage(named: model.iconName)
+        iconImageView.image = UIImage(systemName: model.iconName)
     }
 }
 
@@ -60,12 +58,16 @@ final class MainScreenHourlyWeatherSectionCell: UICollectionViewCell {
 private extension MainScreenHourlyWeatherSectionCell {
     
     private func layoutSetup() {
+        configureLayout()
         configureSubviews()
         makeConstrains()
-        
+    }
+    
+    private func configureLayout() {
         contentView.layer.cornerRadius = 20
         contentView.layer.borderWidth = 0.5
         contentView.layer.borderColor = UIColor.white.withAlphaComponent(0.2).cgColor
+        contentView.clipsToBounds = true
     }
 
     private func configureSubviews() {
@@ -78,10 +80,6 @@ private extension MainScreenHourlyWeatherSectionCell {
     private func makeConstrains() {
         blurEffectView.translatesAutoresizingMaskIntoConstraints = false
         stackView.translatesAutoresizingMaskIntoConstraints = false
-  
-        //MARK: -        // Check the BEHAVIOR!!
-
-        blurEffectView.frame = contentView.bounds
         
         NSLayoutConstraint.activate([
             blurEffectView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -94,8 +92,8 @@ private extension MainScreenHourlyWeatherSectionCell {
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 4),
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4),
             
-            iconImageView.heightAnchor.constraint(equalToConstant: 35),
-            iconImageView.widthAnchor.constraint(equalToConstant: 35)
+            iconImageView.heightAnchor.constraint(equalToConstant: 45),
+            iconImageView.widthAnchor.constraint(equalToConstant: 45)
         ])
     }
 }

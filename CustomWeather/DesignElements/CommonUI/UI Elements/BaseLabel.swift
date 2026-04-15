@@ -22,13 +22,13 @@ struct BaseLabelViewModel: BaseLabelViewModelProtocol {
     var font: UIFont? = .systemFont(ofSize: 14)
     var textColor: UIColor? = .white
     var textAligment: NSTextAlignment? = .left
-    var numberOfLines: Int? = 1
+    var numberOfLines: Int? = 0
     var textSpacing: CGFloat? = 0
     var backgroundColor: UIColor? = .clear
 }
 
 protocol BaseLabelProtocol {
-    func configure(with: BaseLabelViewModelProtocol)
+    func configure(with model: BaseLabelViewModelProtocol)
 }
 
 final class BaseLabel: UILabel, BaseLabelProtocol {
