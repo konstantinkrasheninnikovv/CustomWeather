@@ -11,12 +11,12 @@ final class MainScreenAssembly {
     
     static func buildModule() -> UIViewController {
         
-        let viewController = MainScreenViewController()
+        let viewManager = MainScreenViewManager()
+        let viewController = MainScreenViewController(viewManager: viewManager)
         let interactor = MainScreenInteractor()
         let presenter = MainScreenPresenter(view: viewController, interactor: interactor)
         viewController.setUpPresenter(presenter)
         interactor.setUpPresenter(presenter)
         return viewController
-        
     }
 }

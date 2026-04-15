@@ -1,3 +1,4 @@
+
 //
 //  MainScreenViewController.swift
 //  CustomWeather
@@ -7,38 +8,44 @@
 
 import UIKit
 
-protocol MainScreenViewDelegate {
+protocol MainScreenViewDelegate: AnyObject {
     
 }
 
 //MARK: - Сommands from the presenter
 
 protocol MainScreenViewControllerInput: AnyObject {
-    
+    func displayCurrentLocationImage(_ model: BaseImageViewModel)
+    func displayCurrentWeather(_ model: CurrentWeatherCellViewModel)
+    func displayHourlyWeather(_ models: [MainScreenHourlyWeatherSectionCellModel])
+    func displayDaysForecastWeather(_ models: [MainScreenDaysForecastViewCellModel])
+    func displayAirAndQualityData(_ model: AirQualitySectionCellModel)
 }
 
 final class MainScreenViewController: UIViewController {
     
-    
-    // MARK: - External dependencies
+    // MARK: - Private propeties
     
     private var presenter: MainScreenViewControllerOutput?
-    private let contentView: MainScreenViewProtocol? = MainScreenView()
+    private let mainView: MainScreenViewProtocol = MainScreenView()
+    private let viewManager: MainScreenViewManagerProtocol
+
+    //MARK: - Lifecycle
     
-    // to delete!
-    
-    let interactor = MainScreenInteractor()
-    
-    // to delete!
+    override func loadView() {
+        view = mainView
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        interactor.fetchWeather()
+        initialSetup()
+        presenter?.viewDidLoad()
     }
     
     // MARK: - Initialization
     
-    init() {
+    init(viewManager: MainScreenViewManagerProtocol) {
+        self.viewManager = viewManager
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -49,7 +56,20 @@ final class MainScreenViewController: UIViewController {
     func setUpPresenter(_ presenter: MainScreenViewControllerOutput) {
         self.presenter = presenter
     }
+}
+
+// MARK: - View Controller Setup
+
+private extension MainScreenViewController {
     
+    private func initialSetup() {
+        mainView.delegate = self
+        setupViewManager()
+    }
+    
+    private func setupViewManager() {
+        mainView.assignManager(viewManager)
+    }
 }
 
 // MARK: - MainMainScreenViewDelegate
@@ -61,5 +81,27 @@ extension MainScreenViewController: MainScreenViewDelegate {
 // MARK: - MainScreenViewControllerInput
 
 extension MainScreenViewController: MainScreenViewControllerInput {
+    func displayCurrentLocationImage(_ model: BaseImageViewModel) {
+        mainView.displayCurrentLocationImage(model)
+    }
     
+    func displayHourlyWeather(_ models: [MainScreenHourlyWeatherSectionCellModel]) {
+        viewManager.hourlyCells = models
+        mainView.reloadInfo()
+    }
+    
+    func displayCurrentWeather(_ model: CurrentWeatherCellViewModel) {
+        viewManager.currentWeatherCellViewModel = model
+        mainView.reloadInfo()
+    }
+    
+    func displayDaysForecastWeather(_ models: [MainScreenDaysForecastViewCellModel]) {
+        viewManager.daysForecastCells = models
+        mainView.reloadInfo()
+    }
+    
+    func displayAirAndQualityData(_ model: AirQualitySectionCellModel) {
+        viewManager.airQualitySectionCell = model
+        mainView.reloadInfo()
+    }
 }
