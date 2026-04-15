@@ -16,8 +16,18 @@ struct CurrentWeatherTopViewModel {
 
 final class CurrentWeatherTopView: UIView {
     
-    private let tempLabel = BaseLabel()
-    private let conditionLabel = BaseLabel()
+    private let tempLabel = {
+        let label = BaseLabel()
+        return label
+    }()
+    
+    private let conditionLabel = {
+       let label = BaseLabel()
+        label.numberOfLines = 0
+        label.textAlignment = .left
+        return label
+    }()
+    
     private let feelsLikeLabel = BaseLabel()
     
     private let mainIconView = UIImageView()
@@ -33,6 +43,7 @@ final class CurrentWeatherTopView: UIView {
     private lazy var verticalStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
+        stack.distribution = .fill
         stack.spacing = 2
         stack.alignment = .leading
         return stack
@@ -55,7 +66,6 @@ final class CurrentWeatherTopView: UIView {
         feelsLikeLabel.configure(with: model.feelsLikeModel)
         mainIconView.image = UIImage(systemName: model.mainIconImageModel)
     }
-    
 }
 
 private extension CurrentWeatherTopView {
@@ -78,13 +88,13 @@ private extension CurrentWeatherTopView {
     private func makeConstrains() {
         mainHorizontalStack.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            mainHorizontalStack.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-            mainHorizontalStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            mainHorizontalStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            mainHorizontalStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
-            
-            mainIconView.widthAnchor.constraint(equalToConstant: 85),
-            mainIconView.heightAnchor.constraint(equalToConstant: 85)
+            mainHorizontalStack.topAnchor.constraint(equalTo: topAnchor),
+            mainHorizontalStack.leadingAnchor.constraint(equalTo: leadingAnchor),
+            mainHorizontalStack.trailingAnchor.constraint(equalTo: trailingAnchor),
+            mainHorizontalStack.bottomAnchor.constraint(equalTo: bottomAnchor),
+
+            mainIconView.heightAnchor.constraint(equalTo: verticalStack.heightAnchor, multiplier: 0.8),
+            mainIconView.widthAnchor.constraint(equalTo: mainIconView.heightAnchor)
         ])
     }
 }

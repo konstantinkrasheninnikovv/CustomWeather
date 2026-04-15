@@ -15,8 +15,11 @@ protocol MainScreenViewDelegate: AnyObject {
 //MARK: - Сommands from the presenter
 
 protocol MainScreenViewControllerInput: AnyObject {
+    func displayCurrentLocationImage(_ model: BaseImageViewModel)
+    func displayCurrentWeather(_ model: CurrentWeatherCellViewModel)
     func displayHourlyWeather(_ models: [MainScreenHourlyWeatherSectionCellModel])
-    func displayCurrentWeather(_ model: CurrentWeatherViewModel)
+    func displayDaysForecastWeather(_ models: [MainScreenDaysForecastViewCellModel])
+    func displayAirAndQualityData(_ model: AirQualitySectionCellModel)
 }
 
 final class MainScreenViewController: UIViewController {
@@ -78,12 +81,27 @@ extension MainScreenViewController: MainScreenViewDelegate {
 // MARK: - MainScreenViewControllerInput
 
 extension MainScreenViewController: MainScreenViewControllerInput {
+    func displayCurrentLocationImage(_ model: BaseImageViewModel) {
+        mainView.displayCurrentLocationImage(model)
+    }
+    
     func displayHourlyWeather(_ models: [MainScreenHourlyWeatherSectionCellModel]) {
         viewManager.hourlyCells = models
         mainView.reloadInfo()
     }
     
-    func displayCurrentWeather(_ model: CurrentWeatherViewModel) {
-        mainView.displayCurrentWeather(model)
+    func displayCurrentWeather(_ model: CurrentWeatherCellViewModel) {
+        viewManager.currentWeatherCellViewModel = model
+        mainView.reloadInfo()
+    }
+    
+    func displayDaysForecastWeather(_ models: [MainScreenDaysForecastViewCellModel]) {
+        viewManager.daysForecastCells = models
+        mainView.reloadInfo()
+    }
+    
+    func displayAirAndQualityData(_ model: AirQualitySectionCellModel) {
+        viewManager.airQualitySectionCell = model
+        mainView.reloadInfo()
     }
 }

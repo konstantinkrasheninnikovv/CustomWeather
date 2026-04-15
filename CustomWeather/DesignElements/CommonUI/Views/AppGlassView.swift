@@ -49,10 +49,10 @@ private extension AppGlassView {
     private func makeConstrains() {
         blurEffectView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-                    blurEffectView.topAnchor.constraint(equalTo: topAnchor),
-                    blurEffectView.leadingAnchor.constraint(equalTo: leadingAnchor),
-                    blurEffectView.trailingAnchor.constraint(equalTo: trailingAnchor),
-                    blurEffectView.bottomAnchor.constraint(equalTo: bottomAnchor)
-                ])
+            blurEffectView.topAnchor.constraint(equalTo: topAnchor),
+            blurEffectView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            blurEffectView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            blurEffectView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
     }
 }
