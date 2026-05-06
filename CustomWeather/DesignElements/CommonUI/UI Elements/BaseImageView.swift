@@ -54,16 +54,24 @@ final class BaseImageView: UIView, BaseImageViewProtocol {
     //MARK: - Actions
     
     func configure(with model: BaseImageViewModelProtocol) {
+
+        imageView.image = model.placeholder
+        
         if let name = model.imageName {
             imageView.image = UIImage(named: name)
         } else if let url = model.imageURL {
             
-            // Networking request here - to DO!
-            
-            imageView.image = model.placeholder
-            
-        } else {
-            imageView.image = model.placeholder
+            ImageLoader.shared.loadImage(from: url) { [weak self] downloadedImage in
+                
+                if let image = downloadedImage {
+                    UIView.transition(with: self?.imageView ?? UIImageView(),
+                                      duration: 0.3,
+                                      options: .transitionCrossDissolve,
+                                      animations: {
+                        self?.imageView.image = image
+                    })
+                }
+            }
         }
     }
 }

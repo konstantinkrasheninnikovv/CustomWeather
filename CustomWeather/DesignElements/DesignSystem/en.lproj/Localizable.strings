@@ -1,0 +1,40 @@
+/* 
+  Localizable.strings
+  CustomWeather
+
+  Created by Konstantin Krasheninnikov on 19.04.2026.
+  
+*/
+
+"current_weather_feels_like_title" = "Feels like";
+
+"current_weather_wind_title" = "Wind";
+"current_weather_humidity_title" = "Humidity";
+"current_weather_pressure_title" = "Pressure";
+
+"current_weather_uv_title" = "UV";
+"current_weather_aqi_title" = "AQI";
+"current_weather_visibility_title" = "Clarity";
+
+"current_weather_aqi_subTitle" = "PM2.5";
+"current_weather_visibility_subTitle" = "KM";
+
+"current_weather_aqi_description" = "Minimisation";
+"current_weather_visibility_description" = "Visibility";
+"current_weather_uv_description" = "UV Index";
+
+"aqi_status_good" = "Good";
+"aqi_status_moderate" = "Moderate";
+"aqi_status_sensitive" = "Sensitive";
+"aqi_status_unhealthy" = "Unhealthy";
+
+"visibility_status_very_poor" = "Very Poor";
+"visibility_status_hazy" = "Hazy";
+"visibility_status_good" = "Good";
+"visibility_status_excellent" = "Excellent";
+
+"uv_status_low" = "Low";
+"uv_status_moderate" = "Moderate";
+"uv_status_high" = "High";
+"uv_status_very_high" = "Very high";
+"uv_status_extreme" = "Extreme";

@@ -20,7 +20,7 @@ final class MainScreenRadarViewCell: UICollectionViewCell {
     //MARK: - UI Elements
     
     private lazy var mapView = {
-       let map = MKMapView()
+        let map = MKMapView()
         map.layer.cornerRadius = 20
         map.clipsToBounds = true
         map.isUserInteractionEnabled = false // temporarily
@@ -67,7 +67,6 @@ private extension MainScreenRadarViewCell {
             mapView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             mapView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             mapView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            
         ])
     }
     
