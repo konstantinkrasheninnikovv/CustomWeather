@@ -15,9 +15,19 @@ struct WeatherParamForBottomViewModel {
 
 final class WeatherParamForBottomView : UIView {
     
+    //MARK: - UI Elements
+    
     private let titleLabel = BaseLabel()
-    private let valueLabel = BaseLabel()
+    
+    private let valueLabel = {
+        let label = BaseLabel()
+        label.numberOfLines = 1
+        return label
+    }()
+    
     private let iconView = UIImageView()
+    
+    //MARK: - UI Stacks
     
     private lazy var mainHorizontalStack: UIStackView = {
         let stack = UIStackView()
@@ -46,14 +56,21 @@ final class WeatherParamForBottomView : UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with model: WeatherParamForBottomViewModel) {
-        titleLabel.configure(with: model.titleModel)
-        valueLabel.configure(with: model.valueModel)
-        iconView.image = UIImage(systemName: model.iconNameImageModel)
+    func configure(type: WeatherParamType, parameterValue: String) {
+        
+        let titleLabelStyle = BaseLabelViewModel.weatherStyle(.labelSecondary, text: type.title)
+        titleLabel.configure(with: titleLabelStyle)
+        
+        let valueLabelStyle = BaseLabelViewModel.weatherStyle(.labelValue, text: parameterValue)
+        valueLabel.configure(with: valueLabelStyle)
+        
+        iconView.image = UIImage(systemName: type.iconName)
     }
 }
 
 private extension WeatherParamForBottomView {
+    
+    //MARK: - Setup UI
     
     private func layoutSetup() {
         configureSubviews()

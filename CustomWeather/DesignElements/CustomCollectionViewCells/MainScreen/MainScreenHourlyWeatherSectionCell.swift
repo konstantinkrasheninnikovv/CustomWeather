@@ -18,11 +18,15 @@ final class MainScreenHourlyWeatherSectionCell: UICollectionViewCell {
     
     static let identifier = "HourlyForecastCell"
     
-    private let blurEffectView = AppGlassView()
+    private let blurEffectView = AppGlassView(style: .thickStyle)
     private let timeLabel = BaseLabel()
     private let tempLabel = BaseLabel()
     private let descLabel = BaseLabel()
-    private let iconImageView = UIImageView()
+    private let iconImageView = {
+        let image = UIImageView()
+        image.contentMode = .scaleAspectFit
+        return image
+    }()
     
     private let stackView: UIStackView = {
         let stack = UIStackView()
@@ -45,11 +49,18 @@ final class MainScreenHourlyWeatherSectionCell: UICollectionViewCell {
     
     // MARK: - Public Methods
     
-    func configure(with model: MainScreenHourlyWeatherSectionCellModel) {
-        timeLabel.configure(with: model.timeLabelModel)
-        tempLabel.configure(with: model.tempLabelModel)
-        descLabel.configure(with: model.descLabelModel)
-        iconImageView.image = UIImage(systemName: model.iconName)
+    func configure(with model: MainScreenHourlyForecastWeatherModel) {
+        
+        let timeModelStyle = BaseLabelViewModel.weatherStyle(.labelSecondary, text: model.time)
+        timeLabel.configure(with: timeModelStyle)
+        
+        let tempModelStyle = BaseLabelViewModel.weatherStyle(.bodyMedium, text: model.temperature)
+        tempLabel.configure(with: tempModelStyle)
+                        
+        let descModelStyle = BaseLabelViewModel.weatherStyle(.labelSecondary, text: model.conditionDescription)
+        descLabel.configure(with: descModelStyle)
+                
+        iconImageView.image = UIImage(systemName: model.iconImage, withConfiguration: model.iconConfig)
     }
 }
 
@@ -58,6 +69,9 @@ final class MainScreenHourlyWeatherSectionCell: UICollectionViewCell {
 private extension MainScreenHourlyWeatherSectionCell {
     
     private func layoutSetup() {
+        descLabel.adjustsFontSizeToFitWidth = true
+        descLabel.minimumScaleFactor = 0.7
+        descLabel.lineBreakMode = .byTruncatingTail
         configureLayout()
         configureSubviews()
         makeConstrains()

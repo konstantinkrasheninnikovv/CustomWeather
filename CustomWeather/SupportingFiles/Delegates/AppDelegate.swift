@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  CustomWeather
 //
-//  Created by Константин Крашенинников on 13.03.2026.
+//  Created by Konstantin Krasheninnikov on 13.03.2026.
 //
 
 import UIKit

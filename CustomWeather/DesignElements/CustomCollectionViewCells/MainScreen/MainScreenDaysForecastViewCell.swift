@@ -27,9 +27,8 @@ final class MainScreenDaysForecastViewCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
-    private let dateLabel = BaseLabel()
+    private let avgTemperatureLabel = BaseLabel()
     private let weatherDescriptionLabel = BaseLabel()
-    private let rainPossibilityLabel = BaseLabel()
     
     //MARK: - UI Stacks
     
@@ -37,8 +36,7 @@ final class MainScreenDaysForecastViewCell: UICollectionViewCell {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.alignment = .center
-        stack.spacing = 2
-        stack.distribution = .fill
+        stack.distribution = .fillProportionally
         return stack
     }()
     
@@ -55,13 +53,23 @@ final class MainScreenDaysForecastViewCell: UICollectionViewCell {
     
     //MARK: - Public functions
     
-    func configure(with model: MainScreenDaysForecastViewCellModel) {
+    func configure(with model: MainScreenDaysForecastWeatherModel) {
         
-        dayOfWeekLabel.configure(with: model.dayOfWeekLabelModel)
-        dateLabel.configure(with: model.tempRangeLabelModel)
-        weatherDescriptionLabel.configure(with: model.weatherDescriptionLabelModel)
-        iconImageView.image = UIImage(systemName: model.iconImageName)
-        rainPossibilityLabel.configure(with: model.rainPossibilityLabelModel)
+        let dayOfWeekModelStyle = BaseLabelViewModel.weatherStyle(.bodyMedium, text: model.date)
+        dayOfWeekLabel.configure(with: dayOfWeekModelStyle)
+        
+        let avgTemperatureModelStyle = BaseLabelViewModel.weatherStyle(.bodyMedium, text: model.temp)
+        avgTemperatureLabel.configure(with: avgTemperatureModelStyle)
+        
+        iconImageView.image = UIImage(systemName: model.iconImageName, withConfiguration: model.iconConfig)
+        
+        if let rainChance = model.rainChance {
+            let rainPossibilityModelStyle = BaseLabelViewModel.weatherStyle(.labelRain, text: rainChance)
+            weatherDescriptionLabel.configure(with: rainPossibilityModelStyle)
+        } else {
+            let weatherDescriptionModelStyle = BaseLabelViewModel.weatherStyle(.labelSecondary, text: model.conditionDescription ?? "")
+            weatherDescriptionLabel.configure(with: weatherDescriptionModelStyle)
+        }
     }
 }
 
@@ -79,11 +87,12 @@ private extension MainScreenDaysForecastViewCell {
     
     private func configureSubviews() {
         contentView.addSubview(stackView)
-        [dayOfWeekLabel, iconImageView, dateLabel, weatherDescriptionLabel, rainPossibilityLabel].forEach { stackView.addArrangedSubview($0) }
+        [dayOfWeekLabel, iconImageView, avgTemperatureLabel, weatherDescriptionLabel].forEach { stackView.addArrangedSubview($0) }
     }
     
     private func makeConstrains() {
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        iconImageView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             
@@ -91,10 +100,9 @@ private extension MainScreenDaysForecastViewCell {
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 2),
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -2),
             stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -2),
-            rainPossibilityLabel.heightAnchor.constraint(equalToConstant: 16),
             
-            iconImageView.heightAnchor.constraint(equalToConstant: 30),
-            iconImageView.widthAnchor.constraint(equalToConstant: 30)
+            iconImageView.heightAnchor.constraint(equalToConstant: 40),
+            iconImageView.widthAnchor.constraint(equalToConstant: 40)
         ])
     }
 }

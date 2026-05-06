@@ -18,20 +18,20 @@ struct GaugeValueModel {
     let iconName: String?
 }
 
-struct AirQualitySectionCellModel {
+struct MainScreenEnvironmentalMetricsCellModel {
     let aqi: GaugeValueModel
-    let pollen: GaugeValueModel
+    let visibility: GaugeValueModel
     let uv: GaugeValueModel
 }
 
-final class AirQualitySectionCell: UICollectionViewCell {
+final class MainScreenEnvironmentalMetricsCell: UICollectionViewCell {
     
-    static let identifier = "AirQualitySectionCell"
+    static let identifier = "EnvironmentalMetricsSectionCell"
     
     //MARK: - UI Elements
     
     private let aqiGauge = GaugeElementView()
-    private let pollenGauge = GaugeElementView()
+    private let visibilityGauge = GaugeElementView()
     private let uvGauge = GaugeElementView()
     
     //MARK: - UI Stacks
@@ -57,39 +57,14 @@ final class AirQualitySectionCell: UICollectionViewCell {
     
     //MARK: - Public Methods
     
-    func configure (with model: AirQualitySectionCellModel) {
-        
-        aqiGauge.configureWithText(
-            title: model.aqi.title,
-            value: model.aqi.value,
-            subtitle: model.aqi.subtitle,
-            progress: model.aqi.progress,
-            color: model.aqi.color,
-            status: model.aqi.status,
-            desc: model.aqi.description
-        )
-        
-        pollenGauge.configureWithTextAndIcon(
-            image: UIImage(systemName: model.pollen.iconName ?? ""),
-            subtitle: model.pollen.subtitle,
-            progress: model.pollen.progress,
-            color: model.pollen.color,
-            status: model.pollen.status,
-            desc: model.pollen.description
-        )
-        
-        uvGauge.configureWithTextAndIcon(
-            image: UIImage(systemName: model.uv.iconName ?? ""),
-            subtitle: model.uv.subtitle,
-            progress: model.uv.progress,
-            color: model.uv.color,
-            status: model.uv.status,
-            desc: model.uv.description
-        )
+    func configure (with model: MainScreenEnvironmentalMetricsModel) {
+        aqiGauge.configure(with: model.aqiModel)
+        visibilityGauge.configure(with: model.visibilityModel)
+        uvGauge.configure(with: model.uvMetricModel)
     }
 }
 
-private extension AirQualitySectionCell {
+private extension MainScreenEnvironmentalMetricsCell {
     
     private func layoutSetup() {
         contentView.backgroundColor = .clear
@@ -99,7 +74,7 @@ private extension AirQualitySectionCell {
     
     private func configureSubviews() {
         contentView.addSubview(mainHorizStack)
-        [aqiGauge, pollenGauge, uvGauge].forEach{ mainHorizStack.addArrangedSubview($0) }
+        [aqiGauge, visibilityGauge, uvGauge].forEach{ mainHorizStack.addArrangedSubview($0) }
     }
     
     private func makeConstrains() {
