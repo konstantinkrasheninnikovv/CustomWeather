@@ -18,7 +18,7 @@ final class CurrentWeatherViewCell: UICollectionViewCell {
     
     // MARK: - UI Elements
     
-    private let blurEffectView = AppGlassView()
+    private let blurEffectView = AppGlassView(style: .thickStyle)
     private let topView = CurrentWeatherTopView()
     private let separator = SeparatorView(color: .white.withAlphaComponent(0.3))
     private let bottomView = CurrentWeatherBottomView()
@@ -29,7 +29,7 @@ final class CurrentWeatherViewCell: UICollectionViewCell {
         let stack = UIStackView()
         stack.axis  = .vertical
         stack.isLayoutMarginsRelativeArrangement = true
-        stack.layoutMargins = UIEdgeInsets(top: 10, left: 12, bottom: 12, right: 10)
+        stack.layoutMargins = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 10)
         stack.spacing = 5
         stack.alignment = .fill
         return stack
@@ -48,9 +48,9 @@ final class CurrentWeatherViewCell: UICollectionViewCell {
     
     // MARK: - Public Methods
     
-    func configure(with model: CurrentWeatherCellViewModel) {
-        topView.configure(with: model.topModel)
-        bottomView.configure(with: model.bottomModel)
+    func configure(with model: CurrentWeatherModel) {
+        topView.configure(with: model)
+        bottomView.configure(with: model)
     }
 }
 

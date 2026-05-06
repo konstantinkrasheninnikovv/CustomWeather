@@ -22,7 +22,7 @@ final class CurrentWeatherBottomView: UIView {
     private lazy var mainStack = {
         let stack = UIStackView()
         stack.axis = .horizontal
-        stack.distribution = .fillEqually
+        stack.distribution = .equalCentering
         stack.spacing = 12
         return stack
     }()
@@ -40,10 +40,10 @@ final class CurrentWeatherBottomView: UIView {
     
     // MARK: - Public Methods
 
-    func configure(with model: CurrentWeatherBottomViewModel) {
-        windParam.configure(with: model.windModel)
-        humidityParam.configure(with: model.humidityModel)
-        pressureParam.configure(with: model.pressureModel)
+    func configure(with model: CurrentWeatherModel) {
+        windParam.configure(type: .wind, parameterValue: model.windSpeed)
+        humidityParam.configure(type: .humidity, parameterValue: model.humidity)
+        pressureParam.configure(type: .pressure, parameterValue: model.pressure)
     }
 }
 

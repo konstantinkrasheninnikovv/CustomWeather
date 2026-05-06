@@ -9,24 +9,24 @@ import UIKit
 import MapKit
 
 protocol MainScreenViewManagerProtocol: UICollectionViewDataSource, UICollectionViewDelegate {
-    var currentWeatherCellViewModel: CurrentWeatherCellViewModel? { get set }
-    var hourlyCells: [MainScreenHourlyWeatherSectionCellModel] { get set }
-    var daysForecastCells: [MainScreenDaysForecastViewCellModel] { get set }
-    var airQualitySectionCell: AirQualitySectionCellModel? { get set }
+    var currentWeatherModel: CurrentWeatherModel? { get set }
+    var hourlyForecastModels: [MainScreenHourlyForecastWeatherModel] { get set }
+    var daysForecastModels: [MainScreenDaysForecastWeatherModel] { get set }
+    var environmentalMetricsCell: MainScreenEnvironmentalMetricsModel? { get set }
     var collectionView: UICollectionView? { get set }
 }
 
 final class MainScreenViewManager: NSObject, MainScreenViewManagerProtocol {
     
     // MARK: - Properties
-
-    var currentWeatherCellViewModel: CurrentWeatherCellViewModel?
-    var hourlyCells: [MainScreenHourlyWeatherSectionCellModel] = []
-    var daysForecastCells: [MainScreenDaysForecastViewCellModel] = []
-    var airQualitySectionCell: AirQualitySectionCellModel?
+    
+    var currentWeatherModel: CurrentWeatherModel?
+    var hourlyForecastModels: [MainScreenHourlyForecastWeatherModel] = []
+    var daysForecastModels: [MainScreenDaysForecastWeatherModel] = []
+    var environmentalMetricsCell: MainScreenEnvironmentalMetricsModel?
     
     weak var collectionView: UICollectionView?
-
+    
 }
 
 // MARK: - UICollectionViewDataSource
@@ -34,90 +34,79 @@ final class MainScreenViewManager: NSObject, MainScreenViewManagerProtocol {
 extension MainScreenViewManager: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 5
+        return MainScreenSection.allCases.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch section {
-        case 0:
-            return currentWeatherCellViewModel == nil ? 0 : 1
-        case 1:
-            return hourlyCells.count
-        case 2:
-            return daysForecastCells.count
-        case 3:
-            return 1
-        case 4:
-            return 1
-        default:
-            return 0
+            
+        guard let sectionType = MainScreenSection(rawValue: section) else { return 0 }
+            
+        switch sectionType {
+        case .userLocation: return 1
+        case .currentWeather: return currentWeatherModel == nil ? 0 : 1
+        case .hourlyForecast: return hourlyForecastModels.count
+        case .daysForecast: return daysForecastModels.count
+        case .radarForecast: return 1
+        case .environmentalMetrics: return 1
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        switch indexPath.section {
-        case 0:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CurrentWeatherViewCell.identifier, for: indexPath) as? CurrentWeatherViewCell else { return UICollectionViewCell() }
-            if let model = currentWeatherCellViewModel {
-                cell.configure(with: model)
+        guard let sectionType = MainScreenSection(rawValue: indexPath.section) else { return UICollectionViewCell() }
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: sectionType.cellIdentifier, for: indexPath)
+        
+        switch sectionType {
+        case .userLocation:
+            return (cell as? UserLocationViewCell)!
+        case .currentWeather:
+            if let model = currentWeatherModel {
+                (cell as? CurrentWeatherViewCell)?.configure(with: model)
             }
             return cell
-        case 1:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainScreenHourlyWeatherSectionCell.identifier, for: indexPath) as? MainScreenHourlyWeatherSectionCell else { return UICollectionViewCell() }
-            cell.configure(with: hourlyCells[indexPath.item])
+        case .hourlyForecast:
+            let model = hourlyForecastModels[indexPath.item]
+            (cell as? MainScreenHourlyWeatherSectionCell)?.configure(with: model)
             return cell
-        case 2:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainScreenDaysForecastViewCell.identifier, for: indexPath) as? MainScreenDaysForecastViewCell else { return UICollectionViewCell() }
-            cell.configure(with: daysForecastCells[indexPath.item])
+        case .daysForecast:
+            let model = daysForecastModels[indexPath.item]
+            (cell as? MainScreenDaysForecastViewCell)?.configure(with: model)
             return cell
-        case 3:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainScreenRadarViewCell.identifier, for: indexPath) as? MainScreenRadarViewCell else { return UICollectionViewCell() }
+        case .radarForecast:
             
-            // Get it from Presenter!!!
+            // Get it from Presenter! - TO DO!!
             
             let model = MainScreenRadarViewCellModel(
                 locationName: "Limassol",
                 centerCoordinate: CLLocationCoordinate2D(latitude: 34.6783, longitude: 33.0412)
             )
             
-            cell.configure(with: model)
+            (cell as? MainScreenRadarViewCell)?.configure(with: model)
             return cell
             
-        case 4:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AirQualitySectionCell.identifier, for: indexPath) as? AirQualitySectionCell else { return UICollectionViewCell() }
-            
-            if let model = airQualitySectionCell {
-                cell.configure(with: model)
+        case .environmentalMetrics:
+            if let model = environmentalMetricsCell {
+                (cell as? MainScreenEnvironmentalMetricsCell)?.configure(with: model)
             }
             return cell
-            
-        default:
-            return UICollectionViewCell()
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
-        if kind == UICollectionView.elementKindSectionHeader {
-            guard let header = collectionView.dequeueReusableSupplementaryView(
-                ofKind: kind,
-                withReuseIdentifier: SectionHeaderView.identifier,
-                for: indexPath
-            ) as? SectionHeaderView else {
-                return UICollectionReusableView()
-            }
-            
-            switch indexPath.section {
-            case 1: header.configure(with: "Forecast for now")
-            case 2: header.configure(with: "7-Day Forecast")
-            case 3: header.configure(with: "Live Precipitation Radar")
-            case 4: header.configure(with: "Air Quality Index and Pollen")
-            default: break
-            }
-            
-            return header
+        guard kind == UICollectionView.elementKindSectionHeader,
+              let sectionType = MainScreenSection(rawValue: indexPath.section),
+              let headerTitle = sectionType.headerTitle else {
+            return UICollectionReusableView()
         }
-        return UICollectionReusableView()
+        
+        let header = collectionView.dequeueReusableSupplementaryView(
+            ofKind: kind,
+            withReuseIdentifier: SectionHeaderView.identifier,
+            for: indexPath
+        ) as? SectionHeaderView
+        
+        header?.configure(with: headerTitle)
+        return header ?? UICollectionReusableView()
     }
 }

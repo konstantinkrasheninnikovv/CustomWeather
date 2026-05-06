@@ -9,7 +9,9 @@ import UIKit
 
 final class SectionBackgroundDecorationView: UICollectionReusableView {
 
-    private let glassView = AppGlassView()
+    static let backgroundIdentifier = "SectionBackground"
+    
+    private let glassView = AppGlassView(style: .thickStyle)
     
     // MARK: - Initialization
     

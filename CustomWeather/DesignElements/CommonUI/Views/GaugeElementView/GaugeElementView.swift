@@ -13,29 +13,6 @@ final class GaugeElementView: UIView {
     
     private let arcProgressView = ArcProgressView()
     
-    private lazy var topArcTitleLabel = {
-        let label = BaseLabel()
-        label.font = .systemFont(ofSize: 10, weight: .regular)
-        label.alpha = 0.6
-        label.textColor = .white
-        return label
-    }()
-    
-    private lazy var topArcValueLabel = {
-        let label = BaseLabel()
-        label.font = .systemFont(ofSize: 28, weight: .bold)
-        label.textColor = .white
-        return label
-    }()
-    
-    private lazy var topArcSubtitleLabel = {
-        let label = BaseLabel()
-        label.font = .systemFont(ofSize: 12, weight: .medium)
-        label.tintColor = .white
-        label.textColor = .white
-        return label
-    }()
-    
     private let topArcImageView: UIImageView = {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFit
@@ -43,23 +20,14 @@ final class GaugeElementView: UIView {
         return iv
     }()
     
-    private lazy var statusBottomLabel = {
-        let label = BaseLabel()
-        label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .white
-        return label
-    }()
-    
-    private lazy var descriptionBottomLabel: BaseLabel = {
-        let label = BaseLabel()
-        label.font = .systemFont(ofSize: 12, weight: .regular)
-        label.textColor = .white
-        label.alpha = 0.5
-        return label
-    }()
+    private let topArcTitleLabel = BaseLabel()
+    private let topArcValueLabel = BaseLabel()
+    private let topArcSubtitleLabel = BaseLabel()
+    private let statusBottomLabel = BaseLabel()
+    private let descriptionBottomLabel = BaseLabel()
     
     //MARK: - UI Stacks
-
+    
     private let arcContainer = UIView()
     
     private lazy var mainVertStack = {
@@ -79,7 +47,7 @@ final class GaugeElementView: UIView {
         stack.spacing = 2
         return stack
     }()
-        
+    
     //MARK: - Initialization
     
     override init(frame: CGRect) {
@@ -92,24 +60,24 @@ final class GaugeElementView: UIView {
     }
     
     // MARK: - Public Methods
-
-    func configureWithText(title: String, value: String, subtitle: String, progress: CGFloat, color: UIColor, status: String, desc: String) {
-        
-        toggleTopArcViewMode(isIcon: false)
-        
-        topArcTitleLabel.text = title
-        topArcValueLabel.text = value
-        topArcSubtitleLabel.text = subtitle
-        commonConfigure(progress: progress, color: color, status: status, desc: desc)
-    }
     
-    func configureWithTextAndIcon(image: UIImage?, subtitle: String, progress: CGFloat, color: UIColor, status: String, desc: String) {
+    func configure(with model: MainScreenMetricProtocol) {
+        commonConfigure(
+            title: model.title,
+            progress: model.progress,
+            status: model.status,
+            color: model.color,
+            desc: model.description)
         
-        toggleTopArcViewMode(isIcon: true)
-
-        topArcSubtitleLabel.text = subtitle
-        topArcImageView.image = image
-        commonConfigure(progress: progress, color: color, status: status, desc: desc)
+        if let imageName = model.iconName {
+            toggleTopArcViewMode(isIcon: true)
+            configureImageNoLabels(imageName: imageName)
+        }
+        
+        if let value = model.value, let subtitle = model.subtitle {
+            toggleTopArcViewMode(isIcon: false)
+            configureLabelsNoImage(value: value, subtitle: subtitle)
+        }
     }
 }
 
@@ -117,15 +85,36 @@ private extension GaugeElementView {
     
     //MARK: - Logic
     
-    private func commonConfigure(progress: CGFloat, color: UIColor, status: String, desc: String) {
-        statusBottomLabel.text = status
-        descriptionBottomLabel.text = desc
+    private func commonConfigure(title: String, progress: CGFloat, status: String, color: UIColor, desc: String) {
+        
+        let titleLabelStyle = BaseLabelViewModel.weatherStyle(.labelSecondary, text: title)
+        topArcTitleLabel.configure(with: titleLabelStyle)
+        
+        let statusBottomLabelStyle = BaseLabelViewModel.weatherStyle(.bodyMedium, text: status)
+        statusBottomLabel.configure(with: statusBottomLabelStyle)
+        
+        let descriptionBottomLabelStyle = BaseLabelViewModel.weatherStyle(.labelSecondary, text: desc)
+        descriptionBottomLabel.configure(with: descriptionBottomLabelStyle)
+        
         arcProgressView.setArc(progress: progress, color: color)
+    }
+    
+    private func configureImageNoLabels(imageName: String) {
+        topArcImageView.image = UIImage(systemName: imageName)
+    }
+    
+    private func configureLabelsNoImage(value: String, subtitle: String) {
+        
+        let valueLabelStyle = BaseLabelViewModel.weatherStyle(.titleLarge, text: value)
+        topArcValueLabel.configure(with: valueLabelStyle)
+        
+        let subtitleLabelStyle = BaseLabelViewModel.weatherStyle(.caption, text: subtitle)
+        topArcSubtitleLabel.configure(with: subtitleLabelStyle)
     }
     
     private func toggleTopArcViewMode(isIcon: Bool) {
         topArcImageView.isHidden = !isIcon
-        topArcTitleLabel.isHidden = isIcon
+        topArcSubtitleLabel.isHidden = isIcon
         topArcValueLabel.isHidden = isIcon
     }
     
@@ -138,7 +127,7 @@ private extension GaugeElementView {
     
     private func setupSubviews() {
         addSubview(mainVertStack)
-        [topArcTitleLabel, topArcValueLabel, topArcImageView, topArcSubtitleLabel].forEach { topArcStack.addArrangedSubview($0) }
+        [topArcSubtitleLabel, topArcValueLabel, topArcImageView, topArcTitleLabel].forEach { topArcStack.addArrangedSubview($0) }
         arcContainer.addSubview(arcProgressView)
         arcContainer.addSubview(topArcStack)
         mainVertStack.addArrangedSubview(arcContainer)
@@ -169,7 +158,10 @@ private extension GaugeElementView {
             topArcStack.centerYAnchor.constraint(equalTo: arcContainer.centerYAnchor),
             
             topArcStack.leadingAnchor.constraint(greaterThanOrEqualTo: arcContainer.leadingAnchor, constant: 10),
-            topArcStack.trailingAnchor.constraint(lessThanOrEqualTo: arcContainer.trailingAnchor, constant: -10)
+            topArcStack.trailingAnchor.constraint(lessThanOrEqualTo: arcContainer.trailingAnchor, constant: -10),
+            
+            topArcImageView.heightAnchor.constraint(equalToConstant: 50),
+            topArcImageView.widthAnchor.constraint(equalToConstant: 50)
         ])
     }
 }

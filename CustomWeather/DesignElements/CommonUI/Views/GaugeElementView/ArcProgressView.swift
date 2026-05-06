@@ -63,8 +63,6 @@ final class ArcProgressView: UIView {
     
     // MARK: - Lifecycle Overrides
     
-    /// Вызывается системой, когда Auto Layout завершает расчет размеров вьюхи.
-    /// Это идеальное место для создания путей рисования, так как мы точно знаем bounds.
     override func layoutSubviews() {
         super.layoutSubviews()
         updatePaths()

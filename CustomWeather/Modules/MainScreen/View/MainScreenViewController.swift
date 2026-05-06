@@ -15,11 +15,13 @@ protocol MainScreenViewDelegate: AnyObject {
 //MARK: - Сommands from the presenter
 
 protocol MainScreenViewControllerInput: AnyObject {
+    
+    func displayCurrentWeather(using model: CurrentWeatherModel)
+    
     func displayCurrentLocationImage(_ model: BaseImageViewModel)
-    func displayCurrentWeather(_ model: CurrentWeatherCellViewModel)
-    func displayHourlyWeather(_ models: [MainScreenHourlyWeatherSectionCellModel])
-    func displayDaysForecastWeather(_ models: [MainScreenDaysForecastViewCellModel])
-    func displayAirAndQualityData(_ model: AirQualitySectionCellModel)
+    func displayHourlyWeather(_ models: [MainScreenHourlyForecastWeatherModel])
+    func displayDaysForecastWeather(_ models: [MainScreenDaysForecastWeatherModel])
+    func displayEnvironmentalMetricsData(_ model: MainScreenEnvironmentalMetricsModel)
 }
 
 final class MainScreenViewController: UIViewController {
@@ -39,7 +41,16 @@ final class MainScreenViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initialSetup()
-        presenter?.viewDidLoad()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     // MARK: - Initialization
@@ -65,6 +76,7 @@ private extension MainScreenViewController {
     private func initialSetup() {
         mainView.delegate = self
         setupViewManager()
+        presenter?.viewDidLoad()
     }
     
     private func setupViewManager() {
@@ -81,27 +93,29 @@ extension MainScreenViewController: MainScreenViewDelegate {
 // MARK: - MainScreenViewControllerInput
 
 extension MainScreenViewController: MainScreenViewControllerInput {
+
     func displayCurrentLocationImage(_ model: BaseImageViewModel) {
         mainView.displayCurrentLocationImage(model)
     }
     
-    func displayHourlyWeather(_ models: [MainScreenHourlyWeatherSectionCellModel]) {
-        viewManager.hourlyCells = models
+    func displayCurrentWeather(using model: CurrentWeatherModel) {
+        viewManager.currentWeatherModel = model
         mainView.reloadInfo()
     }
     
-    func displayCurrentWeather(_ model: CurrentWeatherCellViewModel) {
-        viewManager.currentWeatherCellViewModel = model
+    func displayHourlyWeather(_ models: [MainScreenHourlyForecastWeatherModel]) {
+        viewManager.hourlyForecastModels = models
         mainView.reloadInfo()
     }
     
-    func displayDaysForecastWeather(_ models: [MainScreenDaysForecastViewCellModel]) {
-        viewManager.daysForecastCells = models
+    func displayDaysForecastWeather(_ models: [MainScreenDaysForecastWeatherModel]) {
+        viewManager.daysForecastModels = models
         mainView.reloadInfo()
     }
     
-    func displayAirAndQualityData(_ model: AirQualitySectionCellModel) {
-        viewManager.airQualitySectionCell = model
+    func displayEnvironmentalMetricsData(_ model: MainScreenEnvironmentalMetricsModel) {
+        viewManager.environmentalMetricsCell = model
         mainView.reloadInfo()
     }
+
 }

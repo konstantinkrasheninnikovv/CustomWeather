@@ -19,10 +19,10 @@ protocol BaseLabelViewModelProtocol {
 
 struct BaseLabelViewModel: BaseLabelViewModelProtocol {
     var text: String?
-    var font: UIFont? = .systemFont(ofSize: 14)
+    var font: UIFont?
     var textColor: UIColor? = .white
     var textAligment: NSTextAlignment? = .left
-    var numberOfLines: Int? = 0
+    var numberOfLines: Int?
     var textSpacing: CGFloat? = 0
     var backgroundColor: UIColor? = .clear
 }

@@ -7,16 +7,18 @@
 
 import Foundation
 
-protocol Endpoint {
+protocol EndpointProtocol {
     var path: String { get }
+    var host: String { get }
+    var apiKey: String { get }
+    var authParameterName: String { get }
     var queryItems: [URLQueryItem] { get }
 }
 
-extension Endpoint {
+extension EndpointProtocol {
     
     var scheme: String { "https" }
-    var host: String { "api.weatherapi.com" }
-    var apiKey: String { "1e2053de62d349f893e51432251905" }
+//    var host: String { "api.weatherapi.com" }
     
     func makeURL() -> URL? {
         var components = URLComponents()
@@ -25,7 +27,7 @@ extension Endpoint {
         components.path = path
         
         var items = queryItems
-        items.append(URLQueryItem(name: "key", value: apiKey))
+        items.append(URLQueryItem(name: authParameterName, value: apiKey))
         components.queryItems = items
         
         return components.url
