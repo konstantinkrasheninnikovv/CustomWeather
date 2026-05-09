@@ -10,7 +10,6 @@ import UIKit
 final class MainScreenAssembly {
     
     static func buildModule() -> UIViewController {
-        
         let viewManager = MainScreenViewManager()
         let viewController = MainScreenViewController(viewManager: viewManager)
         let interactor = MainScreenInteractor()

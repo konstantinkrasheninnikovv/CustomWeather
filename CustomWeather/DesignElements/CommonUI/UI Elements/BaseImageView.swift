@@ -9,18 +9,18 @@ import UIKit
 
 protocol BaseImageViewModelProtocol {
     var imageName: String? { get set }
-    var imageURL: URL? { get set }
+    var image: UIImage? { get set }
     var placeholder: UIImage? { get set }
 }
 
 struct BaseImageViewModel: BaseImageViewModelProtocol {
     var imageName: String?
-    var imageURL: URL? = nil
+    var image: UIImage?
     var placeholder: UIImage?
 }
 
 protocol BaseImageViewProtocol {
-    func configure(with model: BaseImageViewModelProtocol)
+    func configure(with model: BaseImageViewModelProtocol, color: UIColor?)
 }
 
 final class BaseImageView: UIView, BaseImageViewProtocol {
@@ -34,11 +34,7 @@ final class BaseImageView: UIView, BaseImageViewProtocol {
         return imageView
     }()
     
-    private let overlayView = {
-        let view = UIView()
-        view.backgroundColor = .black.withAlphaComponent(0.2)
-        return view
-    }()
+    private let gradientLayer = CAGradientLayer()
     
     //MARK: - Initialization
     
@@ -51,27 +47,29 @@ final class BaseImageView: UIView, BaseImageViewProtocol {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: - Life cycle
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        gradientLayer.frame = bounds
+    }
+    
     //MARK: - Actions
     
-    func configure(with model: BaseImageViewModelProtocol) {
-
-        imageView.image = model.placeholder
+    func configure(with model: BaseImageViewModelProtocol, color: UIColor? = nil) {
         
-        if let name = model.imageName {
+        if let image = model.image, let color = color {
+            UIView.transition(with: self.imageView,
+                              duration: 0.3,
+                              options: .transitionCrossDissolve,
+                              animations: {
+                self.imageView.image = image
+                self.updateGradient(with: color)
+            })
+        } else if let name = model.imageName {
             imageView.image = UIImage(named: name)
-        } else if let url = model.imageURL {
-            
-            ImageLoader.shared.loadImage(from: url) { [weak self] downloadedImage in
-                
-                if let image = downloadedImage {
-                    UIView.transition(with: self?.imageView ?? UIImageView(),
-                                      duration: 0.3,
-                                      options: .transitionCrossDissolve,
-                                      animations: {
-                        self?.imageView.image = image
-                    })
-                }
-            }
+        } else {
+            imageView.image = model.placeholder
         }
     }
 }
@@ -81,27 +79,41 @@ private extension BaseImageView {
     private func setupLayout() {
         setupSubviews()
         makeConstrains()
+        setupGradient()
+    }
+    
+    private func setupGradient() {
+            gradientLayer.locations = [0.0, 0.5, 1.0]
+            
+            gradientLayer.colors = [
+                UIColor.clear.cgColor,
+                UIColor.clear.cgColor,
+                UIColor.clear.cgColor
+            ]
+            layer.addSublayer(gradientLayer)
+        }
+    
+    private func updateGradient(with color: UIColor) {
+        let newColors = [
+            UIColor.black.withAlphaComponent(0.2).cgColor,
+            UIColor.clear.cgColor,
+            color.cgColor
+        ]
+            self.gradientLayer.colors = newColors
     }
     
     private func setupSubviews() {
         addSubview(imageView)
-        addSubview(overlayView)
     }
     
     private func makeConstrains() {
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        overlayView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: topAnchor),
             imageView.bottomAnchor.constraint(equalTo: bottomAnchor),
             imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            
-            overlayView.topAnchor.constraint(equalTo: topAnchor),
-            overlayView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            overlayView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            overlayView.trailingAnchor.constraint(equalTo: trailingAnchor)
+            imageView.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
     }
 }

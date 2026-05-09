@@ -8,13 +8,14 @@
 import UIKit
 
 struct MainScreenLocationImageMapper {
-    static func mapDataImage(_ data: URLs) -> BaseImageViewModel {
-        let url = URL(string: data.regular)
+    static func mapDataImage(_ model: MainScreenBackgroundModel) -> MainScreenBackgroundViewModel {
         
-        return BaseImageViewModel(
+        let imageViewModel =  BaseImageViewModel(
             imageName: nil,
-            imageURL: url,
+            image: model.image,
             placeholder: UIImage(named: "default_weather_bg")
         )
+        
+       return MainScreenBackgroundViewModel(imageViewModel: imageViewModel, backgroundColor: model.averageColor)
     }
 }

@@ -1,13 +1,13 @@
 //
-//  MainScreenCoordinator.swift
+//  FavoriteCoordinator.swift
 //  CustomWeather
 //
-//  Created by Konstantin Krasheninnikov on 14.03.2026.
+//  Created by Konstantin Krasheninnikov on 08.05.2026.
 //
 
 import UIKit
 
-class MainScreenCoordinator: Coordinator {
+final class FavoriteCoordinator: Coordinator {
     
     // MARK: - Properties
     
@@ -20,7 +20,7 @@ class MainScreenCoordinator: Coordinator {
     }
     
     func startFlow() {
-        let vc = MainScreenAssembly.buildModule()
+        let vc = FavoriteScreenAssembly.buildModule()
         navigationController?.pushViewController(vc, animated: false)
     }
 }

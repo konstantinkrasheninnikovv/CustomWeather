@@ -11,7 +11,8 @@ protocol MainScreenViewProtocol: UIView {
     var delegate: MainScreenViewDelegate? { get set }
     func reloadInfo()
     func assignManager(_ manager: UICollectionViewDataSource & UICollectionViewDelegate)
-    func displayCurrentLocationImage(_ model: BaseImageViewModel)
+    func displayBackgroundImage(_ viewModel: MainScreenBackgroundViewModel)
+    func displayBackgroundColor(_ color: UIColor)
 }
 
 final class MainScreenView: UIView, MainScreenViewProtocol {
@@ -50,8 +51,14 @@ final class MainScreenView: UIView, MainScreenViewProtocol {
         collectionView.reloadData()
     }
     
-    func displayCurrentLocationImage(_ model: BaseImageViewModel) {
-        locationImageTopView.configure(with: model)
+    func displayBackgroundImage(_ viewModel: MainScreenBackgroundViewModel) {
+        locationImageTopView.configure(with: viewModel.imageViewModel, color: viewModel.backgroundColor)
+    }
+    
+    func displayBackgroundColor(_ color: UIColor) {
+        UIView.animate(withDuration: 0.3) {
+            self.backgroundColor = color
+        }
     }
 }
 
