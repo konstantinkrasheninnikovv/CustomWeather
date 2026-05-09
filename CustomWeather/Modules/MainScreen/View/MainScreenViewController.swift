@@ -16,9 +16,8 @@ protocol MainScreenViewDelegate: AnyObject {
 
 protocol MainScreenViewControllerInput: AnyObject {
     
+    func displayBackground(_ viewModel: MainScreenBackgroundViewModel)
     func displayCurrentWeather(using model: CurrentWeatherModel)
-    
-    func displayCurrentLocationImage(_ model: BaseImageViewModel)
     func displayHourlyWeather(_ models: [MainScreenHourlyForecastWeatherModel])
     func displayDaysForecastWeather(_ models: [MainScreenDaysForecastWeatherModel])
     func displayEnvironmentalMetricsData(_ model: MainScreenEnvironmentalMetricsModel)
@@ -94,8 +93,9 @@ extension MainScreenViewController: MainScreenViewDelegate {
 
 extension MainScreenViewController: MainScreenViewControllerInput {
 
-    func displayCurrentLocationImage(_ model: BaseImageViewModel) {
-        mainView.displayCurrentLocationImage(model)
+    func displayBackground(_ viewModel: MainScreenBackgroundViewModel) {
+        mainView.displayBackgroundImage(viewModel)
+        mainView.displayBackgroundColor(viewModel.backgroundColor)
     }
     
     func displayCurrentWeather(using model: CurrentWeatherModel) {
@@ -117,5 +117,4 @@ extension MainScreenViewController: MainScreenViewControllerInput {
         viewManager.environmentalMetricsCell = model
         mainView.reloadInfo()
     }
-
 }

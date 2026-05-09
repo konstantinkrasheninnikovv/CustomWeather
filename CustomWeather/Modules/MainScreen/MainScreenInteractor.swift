@@ -115,11 +115,10 @@ private extension MainScreenInteractor {
                 }
             } catch {
                 // to do:!
-                //                                presenter?.displayError(error.localizedDescription)
+                //     presenter?.displayError(error.localizedDescription)
                 print("Parsing error: \(error)")
             }
         }
-        
     }
     
     private func chooseUnsplashEndpoint(for model: UnsplashRequestType) -> UnsplashEndpoint {
@@ -130,7 +129,20 @@ private extension MainScreenInteractor {
     }
     
     private func handleImageSuccessResponse(_ unsplash: UnsplashResponse) {
-        print(unsplash.urls.regular)
-        presenter?.didFetchImageUnsplash(unsplash.urls)
+        if let url = URL(string: unsplash.urls.regular) {
+            fetchBackground(url)
+        }
+    }
+    
+    private func fetchBackground(_ url: URL) {
+        ImageLoader.shared.loadImage(from: url) { [weak self] image, color in
+            if let image = image, let color = color {
+                let model = MainScreenBackgroundModel(image: image, averageColor: color)
+                self?.presenter?.didFetchBackground(model)
+            } else {
+//                self?.presenter?.didFailToFetchBackground()
+            }
+        }
     }
 }
+

@@ -10,11 +10,8 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        
         window = UIWindow(windowScene: windowScene)
         startAppFlow()
     }
@@ -23,12 +20,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 private extension SceneDelegate {
     
     private func startAppFlow() {
-        
         let navController = UINavigationController()
         let appCoordinator = AppCoordinator(navigationController: navController)
         window?.rootViewController = navController
         window?.makeKeyAndVisible()
-        
         appCoordinator.startFlow()
     }
 }

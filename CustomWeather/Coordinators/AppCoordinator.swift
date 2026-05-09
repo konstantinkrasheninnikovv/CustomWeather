@@ -20,17 +20,17 @@ final class AppCoordinator: Coordinator {
         self.navigationController = navigationController
     }
     
-    // Public functions
+    // MARK: - Public functions
     
     func startFlow() {
-        startMainScreenFlow()
+        startTabBarFlow()
     }
     
-    // Private functions
+    // MARK: - Private functions
     
-    private func startMainScreenFlow() {
-        let mainScreenCoordinator = MainScreenCoordinator(navigationController: navigationController)
-        childCoordinator.append(mainScreenCoordinator)
-        mainScreenCoordinator.startFlow()
+    private func startTabBarFlow() {
+        let tabBarCoordinator = TabBarCoordinator(navigationController: navigationController)
+        childCoordinator.append(tabBarCoordinator)
+        tabBarCoordinator.startFlow()
     }
 }

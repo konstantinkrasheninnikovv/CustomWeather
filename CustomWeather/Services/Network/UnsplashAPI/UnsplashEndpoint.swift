@@ -11,7 +11,7 @@ enum UnsplashEndpoint: EndpointProtocol {
     
     case random (query: String, orientation: String)
     
-    var host: String { "fail api.unsplash.com" }
+    var host: String { "api.unsplash.com" }
     var apiKey: String { "QIAmIkhttFn6VvZY2Qg4dhhYWKcVzJwasJHumjAtPCA" }
     var authParameterName: String { "client_id" }
     

@@ -19,11 +19,11 @@ enum UnsplashRequestType {
 //MARK: - Commands from Interactor
 
 protocol MainScreenInteractorOutput: AnyObject {
+    func didFetchBackground(_ model: MainScreenBackgroundModel)
     func didFetchCurrentWeatherData(_ data: CurrentWeather)
     func didFetchHourlyForecastData(_ data: [Hour])
     func didFetchDaysForecastData(_ data: [ForecastDay])
     func didFetchEnvironmentalMetricsData(_ data: CurrentWeather)
-    func didFetchImageUnsplash(_ data: URLs)
 }
 
 //MARK: - Commands from VC
@@ -71,9 +71,9 @@ extension MainScreenPresenter: MainScreenInteractorOutput {
         view?.displayEnvironmentalMetricsData(environmentalMetricsModel)
     }
     
-    func didFetchImageUnsplash(_ data: URLs) {
-        let modelForImageLocation = MainScreenLocationImageMapper.mapDataImage(data)
-        view?.displayCurrentLocationImage(modelForImageLocation)
+    func didFetchBackground(_ model: MainScreenBackgroundModel) {
+        let viewModel = MainScreenLocationImageMapper.mapDataImage(model)
+        view?.displayBackground(viewModel)
     }
 }
 
@@ -84,7 +84,7 @@ extension MainScreenPresenter: MainScreenViewControllerOutput {
         
         let requestForCurrentWeather: WeatherRequestType = .current(city: "Limassol", aqi: "yes")
         let requestForForecastWeather: WeatherRequestType = .forecast(city: "Limassol", days: 3, hours: 9, step: 2)
-        let requestForImageScreenUnsplash: UnsplashRequestType = .random(query: "NN, city, rain", orientantion: "portrait")
+        let requestForImageScreenUnsplash: UnsplashRequestType = .random(query: "Moscow, sunny, city", orientantion: "portrait")
         
         interactor.getCurrentWeatherData(model: requestForCurrentWeather)
         interactor.getForecastWeatherData(model: requestForForecastWeather)
